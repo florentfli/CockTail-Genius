@@ -10,7 +10,7 @@ var CocktailDAO = function () {
 
         xhr.addEventListener("readystatechange", function () {
             if (this.readyState === 4) {
-                console.log("Reponse recherche ingredient : \n\n"+ this.responseText);
+                //console.log("Reponse recherche ingredient : \n\n"+ this.responseText);
                 callback(this.responseText);
             }
         });

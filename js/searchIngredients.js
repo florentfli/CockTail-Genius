@@ -2,22 +2,29 @@ var searchButton = document.getElementById("searchButton");
 var searchInput = document.getElementById("searchInput");
 
 var cocktailDAO = new CocktailDAO();
-var recherche = "";
+var recherche = null;
 
 var finalHtml = "";
 
+var divResult = document.getElementById("resultSearchIngredients");
+
+
 var listenerClickSearchIngredients = function () {
-    recherche = searchInput.value;
+    recherche = document.getElementById("searchInput").value;
     console.log("Ingredient : " + recherche);
     searchByIngredients(recherche)
 };
 
-
 var callbackIngredient = function (res) {
+
     var resultatRechercheIngredient = JSON.parse(res)['drinks'];
 
     if (resultatRechercheIngredient == null) {
-        document.getElementById("resultSearchIngredients").innerHTML = "<h5>No cocktail found with the ingrdient <i>" + recherche + "</i>.</h5>";
+        divResult.innerHTML = "<h5>No cocktail found with the ingrdient <i>" + recherche + "</i>.</h5>";
+    } else if (recherche == "") {
+        while (divResult.firstChild) {
+            divResult.removeChild(divResult.firstChild);
+        }
     } else {
 
         var html = '';
@@ -25,13 +32,16 @@ var callbackIngredient = function (res) {
         var nbrIngredient = 0;
         var catHtml = '';
         var finHtml = '';
+        finalHtml = '';
 
-        console.log("Nombre de resultat : " + resultatRechercheIngredient.length);
+        //console.log("Nombre de resultat : " + resultatRechercheIngredient.length);
 
         for (var i = 0; i < resultatRechercheIngredient.length; i++) {
 
             html = '';
             listeHtml = '<ul>';
+            catHtml = '';
+            finHtml = '';
 
             if (resultatRechercheIngredient[i].strIngredient1 != "") nbrIngredient = 1;
             if (resultatRechercheIngredient[i].strIngredient2 != "") nbrIngredient = 2;
@@ -49,13 +59,13 @@ var callbackIngredient = function (res) {
             if (resultatRechercheIngredient[i].strIngredient14 != "") nbrIngredient = 14;
             if (resultatRechercheIngredient[i].strIngredient15 != "") nbrIngredient = 15;
 
-            console.log("Nombre d'ingredients : " + nbrIngredient)
+            //console.log("Nombre d'ingredients : " + nbrIngredient)
 
             html += '<div class="card mb-4 mx-auto" style="min-width: 18rem; max-width: 18rem;">' +
                 '       <img src="' + resultatRechercheIngredient[i].strDrinkThumb + '" class="card-img-top" alt="' + resultatRechercheIngredient[i].strDrink + '">\n' +
-                '       <div class="card-body">\n' +
+                '       <div class="card-body text-center">\n' +
                 '           <h5 class="card-title">' + resultatRechercheIngredient[i].strDrink + '</h5>\n' +
-                '           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalId' + resultatRechercheIngredient[i].idDrink + '">Details</button>' +
+                '           <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modalId' + resultatRechercheIngredient[i].idDrink + '">Details</button>' +
                 '       </div>' +
                 '   </div>' +
 
@@ -70,7 +80,7 @@ var callbackIngredient = function (res) {
                 '      </div>\n' +
                 '      <div class="modal-body">\n' +
                 '         <img src="' + resultatRechercheIngredient[i].strDrinkThumb + '" class="rounded mx-auto img-responsive w-100" alt="' + resultatRechercheIngredient[i].strDrink + '">' +
-                '          <p class="mt-3 indent-text">' + resultatRechercheIngredient[i].strInstructions + '</p>' +
+                '          <p class="mt-3 text-justify text-indent">' + resultatRechercheIngredient[i].strInstructions + '</p>' +
                 '      <hr>' +
                 '        <h5>Ingredients</h5><br>';
             /*'      </div>\n' +
@@ -157,33 +167,40 @@ var callbackIngredient = function (res) {
             }
 
             listeHtml += '</ul>' +
-                '<hr>' ;
-/*
-                '<p><b>Category :</b> <span>' + resultatRechercheIngredient[i].strCategory + '</span></p>';
-*/
+                '<hr>';
 
-            catHtml = '<span class="badge badge-pill badge-primary">'+resultatRechercheIngredient[i].strCategory+'</span>'+
-                '<span class="badge badge-pill badge-danger ml-3">'+resultatRechercheIngredient[i].strAlcoholic+'</span>';
+            catHtml = '<div class="text-center"> <span class="badge badge-pill badge-primary">' + resultatRechercheIngredient[i].strCategory + '</span>' +
+                '<span class="badge badge-pill badge-danger ml-3">' + resultatRechercheIngredient[i].strAlcoholic + '</span></div>';
 
             finHtml = '</div>\n' +
                 '    </div>\n' +
                 '  </div>\n' +
                 '</div>';
+
             finalHtml += html + listeHtml + catHtml + finHtml;
 
         }
 
-        document.getElementById("resultSearchIngredients").innerHTML = finalHtml;
+        while (divResult.firstChild) {
+            divResult.removeChild(divResult.firstChild);
+        }
+        divResult.innerHTML = finalHtml;
     }
-
-    console.log("Finit");
 };
 
 var searchByIngredients = function (text) {
     cocktailDAO.searchByIngridient(text, callbackIngredient)
 };
 
-document.querySelector('#searchInput').addEventListener('keypress', function (e) {
+var typeHandler = function (e) {
+    searchInput.innerHTML = e.target.value;
+    listenerClickSearchIngredients();
+};
+
+searchInput.addEventListener('input', typeHandler);
+searchInput.addEventListener('propertychange', typeHandler);
+
+searchInput.addEventListener('keypress', function (e) {
     var key = e.which || e.keyCode;
     if (key === 13) { // 13 is enter
         listenerClickSearchIngredients();
