@@ -23,6 +23,9 @@ var callbackIngredient = function (res) {
         var html = '';
         var listeHtml = '<ul>';
         var nbrIngredient = 0;
+        var catHtml = '';
+        var finHtml = '';
+
         console.log("Nombre de resultat : " + resultatRechercheIngredient.length);
 
         for (var i = 0; i < resultatRechercheIngredient.length; i++) {
@@ -52,7 +55,6 @@ var callbackIngredient = function (res) {
                 '       <img src="' + resultatRechercheIngredient[i].strDrinkThumb + '" class="card-img-top" alt="' + resultatRechercheIngredient[i].strDrink + '">\n' +
                 '       <div class="card-body">\n' +
                 '           <h5 class="card-title">' + resultatRechercheIngredient[i].strDrink + '</h5>\n' +
-                '           <p class="card-text text-align-center">' + resultatRechercheIngredient[i].strInstructions + '</p>\n' +
                 '           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalId' + resultatRechercheIngredient[i].idDrink + '">Details</button>' +
                 '       </div>' +
                 '   </div>' +
@@ -68,9 +70,8 @@ var callbackIngredient = function (res) {
                 '      </div>\n' +
                 '      <div class="modal-body">\n' +
                 '         <img src="' + resultatRechercheIngredient[i].strDrinkThumb + '" class="rounded mx-auto img-responsive w-100" alt="' + resultatRechercheIngredient[i].strDrink + '">' +
-                '          <p>' + resultatRechercheIngredient[i].strInstructions + '</p>' +
-                '      </div>\n' +
-                '      <div class="modal-body">\n' +
+                '          <p class="mt-3 indent-text">' + resultatRechercheIngredient[i].strInstructions + '</p>' +
+                '      <hr>' +
                 '        <h5>Ingredients</h5><br>';
             /*'      </div>\n' +
             '    </div>\n' +
@@ -82,57 +83,57 @@ var callbackIngredient = function (res) {
             if (compteur < nbrIngredient) {
                 compteur += 1;
                 listeHtml +=
-                    '<li>' + resultatRechercheIngredient[i].strIngredient1 + ' <b><span style="margin-left: 2em">' + resultatRechercheIngredient[i].strMeasure1 + '</span></b></li>';
+                    '<li>' + resultatRechercheIngredient[i].strIngredient1 + ' <b><span style="margin-left: 2em">   ' + resultatRechercheIngredient[i].strMeasure1 + '</span></b></li>';
             }
             if (compteur < nbrIngredient) {
                 compteur += 1;
                 listeHtml +=
-                    '<li>' + resultatRechercheIngredient[i].strIngredient2 + ' <b><span style="margin-left: 2em">' + resultatRechercheIngredient[i].strMeasure2 + '</span></b></li>';
+                    '<li>' + resultatRechercheIngredient[i].strIngredient2 + ' <b><span style="margin-left: 2em">   ' + resultatRechercheIngredient[i].strMeasure2 + '</span></b></li>';
             }
             if (compteur < nbrIngredient) {
                 compteur += 1;
                 listeHtml +=
-                    '<li>' + resultatRechercheIngredient[i].strIngredient3 + ' <b><span style="margin-left: 2em">' + resultatRechercheIngredient[i].strMeasure3 + '</span></b></li>';
+                    '<li>' + resultatRechercheIngredient[i].strIngredient3 + ' <b><span style="margin-left: 2em">   ' + resultatRechercheIngredient[i].strMeasure3 + '</span></b></li>';
             }
             if (compteur < nbrIngredient) {
                 compteur += 1;
                 listeHtml +=
-                    '<li>' + resultatRechercheIngredient[i].strIngredient4 + ' <b><span style="margin-left: 2em">' + resultatRechercheIngredient[i].strMeasure4 + '</span></b></li>';
+                    '<li>' + resultatRechercheIngredient[i].strIngredient4 + ' <b><span style="margin-left: 2em">   ' + resultatRechercheIngredient[i].strMeasure4 + '</span></b></li>';
             }
             if (compteur < nbrIngredient) {
                 compteur += 1;
                 listeHtml +=
-                    '<li>' + resultatRechercheIngredient[i].strIngredient5 + ' <b><span style="margin-left: 2em">' + resultatRechercheIngredient[i].strMeasure5 + '</span></b></li>';
+                    '<li>' + resultatRechercheIngredient[i].strIngredient5 + ' <b><span style="margin-left: 2em">   ' + resultatRechercheIngredient[i].strMeasure5 + '</span></b></li>';
             }
             if (compteur < nbrIngredient) {
                 compteur += 1;
                 listeHtml +=
-                    '<li>' + resultatRechercheIngredient[i].strIngredient6 + ' <b><span style="margin-left: 2em">' + resultatRechercheIngredient[i].strMeasure6 + '</span></b></li>';
+                    '<li>' + resultatRechercheIngredient[i].strIngredient6 + ' <b><span style="margin-left: 2em">   ' + resultatRechercheIngredient[i].strMeasure6 + '</span></b></li>';
             }
             if (compteur < nbrIngredient) {
                 compteur += 1;
                 listeHtml +=
-                    '<li>' + resultatRechercheIngredient[i].strIngredient7 + ' <b><span style="margin-left: 2em">' + resultatRechercheIngredient[i].strMeasure7 + '</span></b></li>';
+                    '<li>' + resultatRechercheIngredient[i].strIngredient7 + ' <b><span style="margin-left: 2em">   ' + resultatRechercheIngredient[i].strMeasure7 + '</span></b></li>';
             }
             if (compteur < nbrIngredient) {
                 compteur += 1;
                 listeHtml +=
-                    '<li>' + resultatRechercheIngredient[i].strIngredient8 + ' <b><span style="margin-left: 2em">' + resultatRechercheIngredient[i].strMeasure8 + '</span></b></li>';
+                    '<li>' + resultatRechercheIngredient[i].strIngredient8 + ' <b><span style="margin-left: 2em">   ' + resultatRechercheIngredient[i].strMeasure8 + '</span></b></li>';
             }
             if (compteur < nbrIngredient) {
                 compteur += 1;
                 listeHtml +=
-                    '<li>' + resultatRechercheIngredient[i].strIngredient9 + ' <b><span style="margin-left: 2em">' + resultatRechercheIngredient[i].strMeasure9 + '</span></b></li>';
+                    '<li>' + resultatRechercheIngredient[i].strIngredient9 + ' <b><span style="margin-left: 2em">   ' + resultatRechercheIngredient[i].strMeasure9 + '</span></b></li>';
             }
             if (compteur < nbrIngredient) {
                 compteur += 1;
                 listeHtml +=
-                    '<li>' + resultatRechercheIngredient[i].strIngredient10 + ' <b><span style="margin-left: 2em">' + resultatRechercheIngredient[i].strMeasure10 + '</span></b></li>';
+                    '<li>' + resultatRechercheIngredient[i].strIngredient10 + ' <b><span style="margin-left: 2em">  ' + resultatRechercheIngredient[i].strMeasure10 + '</span></b></li>';
             }
             if (compteur < nbrIngredient) {
                 compteur += 1;
                 listeHtml +=
-                    '<li>' + resultatRechercheIngredient[i].strIngredient11 + ' <b><span style="margin-left: 2em">' + resultatRechercheIngredient[i].strMeasure11 + '</span></b></li>';
+                    '<li>' + resultatRechercheIngredient[i].strIngredient11 + ' <b><span style="margin-left: 2em">  ' + resultatRechercheIngredient[i].strMeasure11 + '</span></b></li>';
             }
             if (compteur < nbrIngredient) {
                 compteur += 1;
@@ -156,11 +157,19 @@ var callbackIngredient = function (res) {
             }
 
             listeHtml += '</ul>' +
-                '      </div>\n' +
+                '<hr>' ;
+/*
+                '<p><b>Category :</b> <span>' + resultatRechercheIngredient[i].strCategory + '</span></p>';
+*/
+
+            catHtml = '<span class="badge badge-pill badge-primary">'+resultatRechercheIngredient[i].strCategory+'</span>'+
+                '<span class="badge badge-pill badge-danger ml-3">'+resultatRechercheIngredient[i].strAlcoholic+'</span>';
+
+            finHtml = '</div>\n' +
                 '    </div>\n' +
                 '  </div>\n' +
                 '</div>';
-            finalHtml += html + listeHtml;
+            finalHtml += html + listeHtml + catHtml + finHtml;
 
         }
 
