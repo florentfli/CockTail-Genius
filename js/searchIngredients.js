@@ -65,7 +65,11 @@ var callbackIngredient = function (res) {
                 '       <img src="' + resultatRechercheIngredient[i].strDrinkThumb + '" class="card-img-top" alt="' + resultatRechercheIngredient[i].strDrink + '">\n' +
                 '       <div class="card-body text-center">\n' +
                 '           <h5 class="card-title">' + resultatRechercheIngredient[i].strDrink + '</h5>\n' +
-                '           <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modalId' + resultatRechercheIngredient[i].idDrink + '">Details</button>' +
+                '           <div class="" style="display: flex;' +
+                '    align-items: center;">' +
+                '               <button type="button" class="btn btn-sm btn-secondary mx-auto" data-toggle="modal" data-target="#modalId' + resultatRechercheIngredient[i].idDrink + '">Details</button>' +
+                '               <p class="fav-hover fav-non-select mx-auto"><span><i class="far fa-heart"></i></span></p>' +
+                '           </div>' +
                 '       </div>' +
                 '   </div>' +
 

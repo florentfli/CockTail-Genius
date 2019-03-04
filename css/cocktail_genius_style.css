@@ -1,4 +1,4 @@
-footer{
+footer {
     margin-bottom: 0;
     position: absolute;
     bottom: 0;
@@ -6,14 +6,14 @@ footer{
 }
 
 
-body,html{
+body, html {
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
 }
 
-.searchbar{
+.searchbar {
     margin-top: 2%;
     height: 60px;
     background-color: #353b48;
@@ -21,7 +21,7 @@ body,html{
     padding: 10px;
 }
 
-.search_input{
+.search_input {
     color: white;
     border: 0;
     outline: 0;
@@ -31,18 +31,18 @@ body,html{
     transition: width 0.4s linear;
 }
 
-.searchbar:hover > .search_input{
+.searchbar:hover > .search_input {
     padding: 0 10px;
     width: 60%;
     transition: width 0.2s linear;
 }
 
-.searchbar:hover > .search_icon{
+.searchbar:hover > .search_icon {
     background: white;
     color: #e74c3c;
 }
 
-.search_icon{
+.search_icon {
     height: 40px;
     width: 40px;
     float: right;
@@ -50,5 +50,20 @@ body,html{
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    color:white;
+    color: white;
+}
+
+.fav-non-select {
+    margin: 0;
+    padding: 0;
+    font-size: 34px;
+    color: #424242;
+    cursor: pointer; /* Mouse pointer on hover */
+}
+
+.fav-hover:hover {
+    margin: 0;
+    padding: 0;
+    cursor: pointer; /* Mouse pointer on hover */
+    color: red;
 }
