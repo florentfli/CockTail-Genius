@@ -9,18 +9,44 @@ var finalHtml = "";
 var divResult = document.getElementById("resultSearchIngredients");
 
 
-var listenerClickSearchIngredients = function () {
+var listenerClickSearchName = function () {
     recherche = document.getElementById("searchInput").value;
     console.log("Ingredient : " + recherche);
     searchByIngredients(recherche)
 };
 
+var callBackFavClick = function (id) {
+    var voiture = JSON.parse('{"favorites":{"id" : 1233}}');
+    localStorage.setItem('fav', JSON.stringify(voiture));
+    console.log("Callback click fav sur cocktail id : " + id);
+
+    if (localStorage.getItem("fav") == null || localStorage.getItem("fav").length == 0) {
+        console.log("Local storage vide");
+
+        localStorage.setItem("fav", "");
+    }
+
+    var listeIdFavExistant = JSON.parse(localStorage.getItem("fav"));
+    console.log(listeIdFavExistant);
+    var tab = [];
+    tab.push(listeIdFavExistant);
+    listeIdFavExistant["favorites"].push({"id": 199999});
+    //listeIdFavExistant["favorites"].push('{"id" : 183}');
+
+    localStorage.setItem("fav", JSON.stringify(listeIdFavExistant));
+    console.log(localStorage.getItem("fav"))
+};
+
 var callbackIngredient = function (res) {
+
+    while (divResult.firstChild) {
+        divResult.removeChild(divResult.firstChild);
+    }
 
     var resultatRechercheIngredient = JSON.parse(res)['drinks'];
 
     if (resultatRechercheIngredient == null) {
-        divResult.innerHTML = "<h5>No cocktail found with the ingrdient <i>" + recherche + "</i>.</h5>";
+        divResult.innerHTML = "<h5>No cocktail found with the ingredient <i>" + recherche + "</i>.</h5>";
     } else if (recherche == "") {
         while (divResult.firstChild) {
             divResult.removeChild(divResult.firstChild);
@@ -68,7 +94,7 @@ var callbackIngredient = function (res) {
                 '           <div class="" style="display: flex;' +
                 '    align-items: center;">' +
                 '               <button type="button" class="btn btn-sm btn-secondary mx-auto" data-toggle="modal" data-target="#modalId' + resultatRechercheIngredient[i].idDrink + '">Details</button>' +
-                '               <p class="fav-hover fav-non-select mx-auto"><span><i class="far fa-heart"></i></span></p>' +
+                '               <p onclick="callBackFavClick(' + resultatRechercheIngredient[i].idDrink + ')" id="fav-button' + resultatRechercheIngredient[i].idDrink + '" data-id="' + resultatRechercheIngredient[i].idDrink + '" class="fav-hover fav-non-select mx-auto"><span id="icon-fav"><i class="far fa-heart"></i></span></p>' +
                 '           </div>' +
                 '       </div>' +
                 '   </div>' +
@@ -183,12 +209,8 @@ var callbackIngredient = function (res) {
 
             finalHtml += html + listeHtml + catHtml + finHtml;
 
+            divResult.innerHTML = finalHtml;
         }
-
-        while (divResult.firstChild) {
-            divResult.removeChild(divResult.firstChild);
-        }
-        divResult.innerHTML = finalHtml;
     }
 };
 
@@ -198,7 +220,7 @@ var searchByIngredients = function (text) {
 
 var typeHandler = function (e) {
     searchInput.innerHTML = e.target.value;
-    listenerClickSearchIngredients();
+    listenerClickSearchName();
 };
 
 searchInput.addEventListener('input', typeHandler);
@@ -207,7 +229,8 @@ searchInput.addEventListener('propertychange', typeHandler);
 searchInput.addEventListener('keypress', function (e) {
     var key = e.which || e.keyCode;
     if (key === 13) { // 13 is enter
-        listenerClickSearchIngredients();
+        listenerClickSearchName();
     }
 });
-searchButton.addEventListener("click", listenerClickSearchIngredients);
+
+searchButton.addEventListener("click", listenerClickSearchName);

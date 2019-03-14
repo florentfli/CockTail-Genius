@@ -8,6 +8,8 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <link rel="stylesheet" href="../css/cocktail_genius_style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+          integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
     <title>Cocktail Genius</title>
 
@@ -37,6 +39,7 @@
                         Searsh by
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="search_name.html">Names</a>
                         <a class="dropdown-item" href="search_ingredients.html">Ingredients</a>
                         <a class="dropdown-item" href="search_categories.html">Categories</a>
                         <a class="dropdown-item" href="search_alcohol.html">Alcohol</a>
@@ -50,16 +53,24 @@
 
 
 <div class="container">
+    <h2 class="text-center mt-5">Search CockTails by Alcohol :</h2>
 
+    <div class="d-flex justify-content-center">
+        <select class="mt-3 form-control w-25" id="selectAlcohol">
+            <option selected disabled>Chose a category</option>
+            <option>Alcoholic</option>
+            <option>Non Alcoholic</option>
+        </select>
+    </div>
 
-</div>
+    <div class="row mt-5">
+        <div id="resultSearchAlcohol" class="card-deck mx-auto">
 
-<div class="footer">
-    <footer class="page-footer font-small bg-dark small">
-        <div class="footer-copyright text-light text-center py-3">© 2018 Copyright: CockTail Genius Corp
         </div>
-    </footer>
+        <div id="modalCustom"></div>
+    </div>
 </div>
+
 
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -71,6 +82,10 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+
+
+<script src="../js/CocktailDAO.js"></script>
+<script src="../js/searchAlcohol.js"></script>
 
 </body>
 </html>
