@@ -1,6 +1,8 @@
 var cocktailDAO = new CocktailDAO();
+var favoriteDAO = new FavoriteDAO();
+
 var finalHtml = "";
-var recherche= " ";
+var recherche = " ";
 var selectCat = document.getElementById("selectCategories");
 var divResult = document.getElementById("resultSearchCategories");
 
@@ -17,28 +19,6 @@ var callbackCategoriesSelect = function (response) {
     selectCat.innerHTML = html;
 };
 
-
-var callBackFavClick = function (id) {
-    var voiture = JSON.parse('{"favorites":{"id" : 1233}}');
-    localStorage.setItem('fav', JSON.stringify(voiture));
-    console.log("Callback click fav sur cocktail id : " + id);
-
-    if (localStorage.getItem("fav") == null || localStorage.getItem("fav").length == 0) {
-        console.log("Local storage vide");
-
-        localStorage.setItem("fav", "");
-    }
-
-    var listeIdFavExistant = JSON.parse(localStorage.getItem("fav"));
-    console.log(listeIdFavExistant);
-    var tab = [];
-    tab.push(listeIdFavExistant);
-    listeIdFavExistant["favorites"].push({"id": 199999});
-    //listeIdFavExistant["favorites"].push('{"id" : 183}');
-
-    localStorage.setItem("fav", JSON.stringify(listeIdFavExistant));
-    console.log(localStorage.getItem("fav"))
-};
 
 var callbackClickCat = function () {
 
@@ -181,15 +161,24 @@ var showPopUp = function (cocktail) {
         '</div>';
 
     finalHtml += modalHtml + listeHtml + catHtml + finHtml;
-    document.getElementById("modalCustom").innerHTML=finalHtml
-    $('#modalId'+cocktailDetail.idDrink).modal('show');
+    document.getElementById("modalCustom").innerHTML = finalHtml
+    $('#modalId' + cocktailDetail.idDrink).modal('show');
 
 
 };
 
 var onButtonClick = function (id) {
-    console.log("Id cocktail clicked : "+id)
-    cocktailDAO.findById(id,showPopUp)
+    console.log("Id cocktail clicked : " + id)
+    cocktailDAO.findById(id, showPopUp)
+};
+
+var callbackAddFav = function (res) {
+    var cocktailDetail = JSON.parse(res)['drinks'][0];
+    favoriteDAO.addCocktail(cocktailDetail);
+};
+
+var clickFav = function (id) {
+    var cocktail = cocktailDAO.findById(id,callbackAddFav);
 };
 
 var callbackCat = function (res) {
@@ -225,19 +214,23 @@ var callbackCat = function (res) {
             catHtml = '';
             finHtml = '';
 
+            var id = resultatRechercheCategory[i].idDrink;
+            var name = resultatRechercheCategory[i].strDrink;
+            var img = resultatRechercheCategory[i].strDrinkThumb;
+
             //console.log("Nombre d'ingredients : " + nbrIngredient)
 
             html += '<div class="card mb-4 mx-auto" style="min-width: 18rem; max-width: 18rem;">' +
-                '       <img src="' + resultatRechercheCategory[i].strDrinkThumb + '" class="card-img-top" alt="' + resultatRechercheCategory[i].strDrink + '">\n' +
+                '       <img src="' + resultatRechercheCategory[i].strDrinkThumb + '" class="card-img-top" alt="' + resultatRechercheCategory[i].strDrink + '">' +
                 '       <div class="card-body text-center">\n' +
-                '           <h5 class="card-title">' + resultatRechercheCategory[i].strDrink + '</h5>\n' +
-                '           <div class="" style="display: flex;' +
-                '    align-items: center;">' +
+                '           <h5 class="card-title">' + resultatRechercheCategory[i].strDrink + '</h5>' +
+                '           <div class="" style="display: flex; align-items: center;">' +
                 '               <button onclick="onButtonClick(' + resultatRechercheCategory[i].idDrink + ')" id="buttonId' + resultatRechercheCategory[i].idDrink + '" type="button" class="btn btn-sm btn-secondary mx-auto" data-toggle="modal" data-target="#modalId' + resultatRechercheCategory[i].idDrink + '">Details</button>' +
-                '               <p onclick="callBackFavClick(' + resultatRechercheCategory[i].idDrink + ')" id="fav-button' + resultatRechercheCategory[i].idDrink + '" data-id="' + resultatRechercheCategory[i].idDrink + '" class="fav-hover fav-non-select mx-auto"><span id="icon-fav"><i class="far fa-heart"></i></span></p>' +
+                '               <p onclick="clickFav('+id+')" id="fav-button' + resultatRechercheCategory[i].idDrink + '" data-id="' + resultatRechercheCategory[i].idDrink + '" class="fav-hover fav-non-select mx-auto"><span id="icon-fav"><i class="far fa-heart"></i></span></p>' +
                 '           </div>' +
                 '       </div>' +
-                '   </div>'/* +
+                '   </div>';
+            /* +
 
                 '<div class="modal fade" id="modalId' + resultatRechercheCategory[i].idDrink + '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">\n' +
                 '  <div class="modal-dialog modal-dialog-centered" role="document">' +
@@ -252,7 +245,7 @@ var callbackCat = function (res) {
                 '         <img src="' + resultatRechercheCategory[i].strDrinkThumb + '" class="rounded mx-auto img-responsive w-100" alt="' + resultatRechercheCategory[i].strDrink + '">' +
                 '          <p class="mt-3 text-justify text-indent">' + resultatRechercheCategory[i].strInstructions + '</p>' +
                 '      <hr>' +
-                '        <h5>Ingredients</h5><br>'*/;
+                '        <h5>Ingredients</h5><br>'*/
             /*'      </div>\n' +
             '    </div>\n' +
             '  </div>\n' +
