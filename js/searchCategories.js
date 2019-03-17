@@ -72,6 +72,7 @@ var showPopUp = function (cocktail) {
     var listeHtml = "";
     var catHtml = "";
     var finHtml = "";
+    var finalHtml = "";
     var compteur = 0;
     if (compteur < nbrIngredient) {
         compteur += 1;
@@ -160,25 +161,30 @@ var showPopUp = function (cocktail) {
         '  </div>\n' +
         '</div>';
 
-    finalHtml += modalHtml + listeHtml + catHtml + finHtml;
+    finalHtml = modalHtml + listeHtml + catHtml + finHtml;
     document.getElementById("modalCustom").innerHTML = finalHtml
     $('#modalId' + cocktailDetail.idDrink).modal('show');
-
-
 };
 
 var onButtonClick = function (id) {
     console.log("Id cocktail clicked : " + id)
     cocktailDAO.findById(id, showPopUp)
 };
-
 var callbackAddFav = function (res) {
     var cocktailDetail = JSON.parse(res)['drinks'][0];
     favoriteDAO.addCocktail(cocktailDetail);
 };
 
 var clickFav = function (id) {
-    var cocktail = cocktailDAO.findById(id,callbackAddFav);
+    var buttonCocktailFav = $("#fav-button"+id);
+
+    if (favoriteDAO.isInFavorite(id)){
+        favoriteDAO.deleteCocktail(id);
+        buttonCocktailFav.css('color','black');
+    }else{
+        var cocktail = cocktailDAO.findById(id,callbackAddFav);
+        buttonCocktailFav.css('color','red');
+    }
 };
 
 var callbackCat = function (res) {
@@ -215,10 +221,10 @@ var callbackCat = function (res) {
             finHtml = '';
 
             var id = resultatRechercheCategory[i].idDrink;
-            var name = resultatRechercheCategory[i].strDrink;
-            var img = resultatRechercheCategory[i].strDrinkThumb;
-
-            //console.log("Nombre d'ingredients : " + nbrIngredient)
+            var color = 'black';
+            if (favoriteDAO.isInFavorite(id)){
+                color = 'red';
+            }
 
             html += '<div class="card mb-4 mx-auto" style="min-width: 18rem; max-width: 18rem;">' +
                 '       <img src="' + resultatRechercheCategory[i].strDrinkThumb + '" class="card-img-top" alt="' + resultatRechercheCategory[i].strDrink + '">' +
@@ -226,44 +232,16 @@ var callbackCat = function (res) {
                 '           <h5 class="card-title">' + resultatRechercheCategory[i].strDrink + '</h5>' +
                 '           <div class="" style="display: flex; align-items: center;">' +
                 '               <button onclick="onButtonClick(' + resultatRechercheCategory[i].idDrink + ')" id="buttonId' + resultatRechercheCategory[i].idDrink + '" type="button" class="btn btn-sm btn-secondary mx-auto" data-toggle="modal" data-target="#modalId' + resultatRechercheCategory[i].idDrink + '">Details</button>' +
-                '               <p onclick="clickFav('+id+')" id="fav-button' + resultatRechercheCategory[i].idDrink + '" data-id="' + resultatRechercheCategory[i].idDrink + '" class="fav-hover fav-non-select mx-auto"><span id="icon-fav"><i class="far fa-heart"></i></span></p>' +
+                '               <p onclick="clickFav('+id+')" id="fav-button' + resultatRechercheCategory[i].idDrink + '" data-id="' + resultatRechercheCategory[i].idDrink + '" class="fav-hover fav-non-select mx-auto" style="color: '+color+'"><span id="icon-fav"><i class="far fa-heart"></i></span></p>' +
                 '           </div>' +
                 '       </div>' +
                 '   </div>';
-            /* +
-
-                '<div class="modal fade" id="modalId' + resultatRechercheCategory[i].idDrink + '" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">\n' +
-                '  <div class="modal-dialog modal-dialog-centered" role="document">' +
-                '    <div class="modal-content">' +
-                '      <div class="modal-header">' +
-                '        <h5 class="modal-title" id="exampleModalLongTitle">' + resultatRechercheCategory[i].strDrink + '</h5>\n' +
-                '        <button type="button" class="close" data-dismiss="modal" aria-label="Close">\n' +
-                '          <span aria-hidden="true">&times;</span>\n' +
-                '        </button>\n' +
-                '      </div>\n' +
-                '      <div class="modal-body">\n' +
-                '         <img src="' + resultatRechercheCategory[i].strDrinkThumb + '" class="rounded mx-auto img-responsive w-100" alt="' + resultatRechercheCategory[i].strDrink + '">' +
-                '          <p class="mt-3 text-justify text-indent">' + resultatRechercheCategory[i].strInstructions + '</p>' +
-                '      <hr>' +
-                '        <h5>Ingredients</h5><br>'*/
-            /*'      </div>\n' +
-            '    </div>\n' +
-            '  </div>\n' +
-            '</div>';*/
-
 
             finalHtml += html;
 
             divResult.innerHTML = finalHtml;
-
-            //document.getElementById("buttonId" + resultatRechercheCategory[i].idDrink).addEventListener("click", onButtonClick)
-
         }
     }
-};
-
-var searchByName = function (text) {
-    cocktailDAO.searchByName(text, callbackName)
 };
 
 cocktailDAO.getCategories(callbackCategoriesSelect);

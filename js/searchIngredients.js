@@ -2,7 +2,9 @@ var searchButton = document.getElementById("searchButton");
 var searchInput = document.getElementById("searchInput");
 
 var cocktailDAO = new CocktailDAO();
-var recherche = null;
+var favoriteDAO = new FavoriteDAO();
+
+var recherche = '';
 
 var finalHtml = "";
 
@@ -15,43 +17,36 @@ var listenerClickSearchName = function () {
     searchByIngredients(recherche)
 };
 
-var callBackFavClick = function (id) {
-    var voiture = JSON.parse('{"favorites":{"id" : 1233}}');
-    localStorage.setItem('fav', JSON.stringify(voiture));
-    console.log("Callback click fav sur cocktail id : " + id);
+var callbackAddFav = function (res) {
+    var cocktailDetail = JSON.parse(res)['drinks'][0];
+    favoriteDAO.addCocktail(cocktailDetail);
+};
 
-    if (localStorage.getItem("fav") == null || localStorage.getItem("fav").length == 0) {
-        console.log("Local storage vide");
+var clickFav = function (id) {
+    var buttonCocktailFav = $("#fav-button" + id);
 
-        localStorage.setItem("fav", "");
+    if (favoriteDAO.isInFavorite(id)) {
+        favoriteDAO.deleteCocktail(id);
+        buttonCocktailFav.css('color', 'black');
+    } else {
+        cocktailDAO.findById(id, callbackAddFav);
+        buttonCocktailFav.css('color', 'red');
     }
-
-    var listeIdFavExistant = JSON.parse(localStorage.getItem("fav"));
-    console.log(listeIdFavExistant);
-    var tab = [];
-    tab.push(listeIdFavExistant);
-    listeIdFavExistant["favorites"].push({"id": 199999});
-    //listeIdFavExistant["favorites"].push('{"id" : 183}');
-
-    localStorage.setItem("fav", JSON.stringify(listeIdFavExistant));
-    console.log(localStorage.getItem("fav"))
 };
 
 var callbackIngredient = function (res) {
+    divResult.innerHTML = "";
 
-    while (divResult.firstChild) {
-        divResult.removeChild(divResult.firstChild);
-    }
+    var resultatRechercheIngredient = "";
 
-    var resultatRechercheIngredient = JSON.parse(res)['drinks'];
-
-    if (resultatRechercheIngredient == null) {
+    if (res == null || res == "") {
         divResult.innerHTML = "<h5>No cocktail found with the ingredient <i>" + recherche + "</i>.</h5>";
     } else if (recherche == "") {
         while (divResult.firstChild) {
             divResult.removeChild(divResult.firstChild);
         }
     } else {
+        resultatRechercheIngredient = JSON.parse(res)['drinks'];
 
         var html = '';
         var listeHtml = '<ul>';
@@ -68,6 +63,11 @@ var callbackIngredient = function (res) {
             listeHtml = '<ul>';
             catHtml = '';
             finHtml = '';
+
+            var color = 'black';
+            if (favoriteDAO.isInFavorite(resultatRechercheIngredient[i].idDrink)) {
+                color = 'red';
+            }
 
             if (resultatRechercheIngredient[i].strIngredient1 != "") nbrIngredient = 1;
             if (resultatRechercheIngredient[i].strIngredient2 != "") nbrIngredient = 2;
@@ -94,7 +94,7 @@ var callbackIngredient = function (res) {
                 '           <div class="" style="display: flex;' +
                 '    align-items: center;">' +
                 '               <button type="button" class="btn btn-sm btn-secondary mx-auto" data-toggle="modal" data-target="#modalId' + resultatRechercheIngredient[i].idDrink + '">Details</button>' +
-                '               <p onclick="callBackFavClick(' + resultatRechercheIngredient[i].idDrink + ')" id="fav-button' + resultatRechercheIngredient[i].idDrink + '" data-id="' + resultatRechercheIngredient[i].idDrink + '" class="fav-hover fav-non-select mx-auto"><span id="icon-fav"><i class="far fa-heart"></i></span></p>' +
+                '               <p onclick="clickFav(' + resultatRechercheIngredient[i].idDrink + ')" id="fav-button' + resultatRechercheIngredient[i].idDrink + '" data-id="' + resultatRechercheIngredient[i].idDrink + '" style="color: ' + color + '" class="fav-hover fav-non-select mx-auto"><span id="icon-fav"><i class="far fa-heart"></i></span></p>' +
                 '           </div>' +
                 '       </div>' +
                 '   </div>' +

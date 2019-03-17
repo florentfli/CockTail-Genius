@@ -1,7 +1,7 @@
 var CocktailDAO = function () {
 
-    this.searchByIngridient = function lister(ingredient, callback) {
-        var url = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?i=';
+    this.searchByIngridient = function(ingredient, callback) {
+        var url = 'https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=';
 
         var data = null;
 
@@ -10,7 +10,6 @@ var CocktailDAO = function () {
 
         xhr.addEventListener("readystatechange", function () {
             if (this.readyState === 4) {
-                //console.log("Reponse recherche ingredient : \n\n"+ this.responseText);
                 callback(this.responseText);
             }
         });

@@ -1,7 +1,7 @@
 var searchButton = document.getElementById("searchButton");
 var searchInput = document.getElementById("searchInput");
-
 var cocktailDAO = new CocktailDAO();
+var favoriteDAO = new FavoriteDAO();
 var recherche = null;
 
 var finalHtml = "";
@@ -15,26 +15,22 @@ var listenerClickSearchName = function () {
     searchByName(recherche)
 };
 
-var callBackFavClick = function (id) {
-    var voiture = JSON.parse('{"favorites":{"id" : 1233}}');
-    localStorage.setItem('fav', JSON.stringify(voiture));
-    console.log("Callback click fav sur cocktail id : " + id);
 
-    if (localStorage.getItem("fav") == null || localStorage.getItem("fav").length == 0) {
-        console.log("Local storage vide");
+var callbackAddFav = function (res) {
+    var cocktailDetail = JSON.parse(res)['drinks'][0];
+    favoriteDAO.addCocktail(cocktailDetail);
+};
 
-        localStorage.setItem("fav", "");
+var clickFav = function (id) {
+    var buttonCocktailFav = $("#fav-button"+id);
+
+    if (favoriteDAO.isInFavorite(id)){
+        favoriteDAO.deleteCocktail(id);
+        buttonCocktailFav.css('color','black');
+    }else{
+        cocktailDAO.findById(id,callbackAddFav);
+        buttonCocktailFav.css('color','red');
     }
-
-    var listeIdFavExistant = JSON.parse(localStorage.getItem("fav"));
-    console.log(listeIdFavExistant);
-    var tab = [];
-    tab.push(listeIdFavExistant);
-    listeIdFavExistant["favorites"].push({"id": 199999});
-    //listeIdFavExistant["favorites"].push('{"id" : 183}');
-
-    localStorage.setItem("fav", JSON.stringify(listeIdFavExistant));
-    console.log(localStorage.getItem("fav"))
 };
 
 var callbackName = function (res) {
@@ -68,6 +64,10 @@ var callbackName = function (res) {
             listeHtml = '<ul>';
             catHtml = '';
             finHtml = '';
+            var color = 'black';
+            if (favoriteDAO.isInFavorite(resultatRechercheName[i].idDrink)){
+                color = 'red';
+            }
 
             if (resultatRechercheName[i].strIngredient1 != "") nbrIngredient = 1;
             if (resultatRechercheName[i].strIngredient2 != "") nbrIngredient = 2;
@@ -94,7 +94,7 @@ var callbackName = function (res) {
                 '           <div class="" style="display: flex;' +
                 '    align-items: center;">' +
                 '               <button type="button" class="btn btn-sm btn-secondary mx-auto" data-toggle="modal" data-target="#modalId' + resultatRechercheName[i].idDrink + '">Details</button>' +
-                '               <p onclick="callBackFavClick(' + resultatRechercheName[i].idDrink + ')" id="fav-button' + resultatRechercheName[i].idDrink + '" data-id="' + resultatRechercheName[i].idDrink + '" class="fav-hover fav-non-select mx-auto"><span id="icon-fav"><i class="far fa-heart"></i></span></p>' +
+                '               <p onclick="clickFav(' + resultatRechercheName[i].idDrink + ')" id="fav-button' + resultatRechercheName[i].idDrink + '" data-id="' + resultatRechercheName[i].idDrink + '" style="color: '+color+'" class="fav-hover fav-non-select mx-auto"><span id="icon-fav"><i class="far fa-heart"></i></span></p>' +
                 '           </div>' +
                 '       </div>' +
                 '   </div>' +

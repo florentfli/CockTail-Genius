@@ -1,31 +1,26 @@
 var cocktailDAO = new CocktailDAO();
+var favoriteDAO = new FavoriteDAO();
 var finalHtml = "";
 var recherche = "lol";
 
 var selectAlcohol = document.getElementById("selectAlcohol");
 var divResult = document.getElementById("resultSearchAlcohol");
 
+var callbackAddFav = function (res) {
+    var cocktailDetail = JSON.parse(res)['drinks'][0];
+    favoriteDAO.addCocktail(cocktailDetail);
+};
 
-var callBackFavClick = function (id) {
-    var voiture = JSON.parse('{"favorites":{"id" : 1233}}');
-    localStorage.setItem('fav', JSON.stringify(voiture));
-    console.log("Callback click fav sur cocktail id : " + id);
+var clickFav = function (id) {
+    var buttonCocktailFav = $("#fav-button"+id);
 
-    if (localStorage.getItem("fav") == null || localStorage.getItem("fav").length == 0) {
-        console.log("Local storage vide");
-
-        localStorage.setItem("fav", "");
+    if (favoriteDAO.isInFavorite(id)){
+        favoriteDAO.deleteCocktail(id);
+        buttonCocktailFav.css('color','black');
+    }else{
+        var cocktail = cocktailDAO.findById(id,callbackAddFav);
+        buttonCocktailFav.css('color','red');
     }
-
-    var listeIdFavExistant = JSON.parse(localStorage.getItem("fav"));
-    console.log(listeIdFavExistant);
-    var tab = [];
-    tab.push(listeIdFavExistant);
-    listeIdFavExistant["favorites"].push({"id": 199999});
-    //listeIdFavExistant["favorites"].push('{"id" : 183}');
-
-    localStorage.setItem("fav", JSON.stringify(listeIdFavExistant));
-    console.log(localStorage.getItem("fav"))
 };
 
 var callbackClickAlcohol = function () {
@@ -56,6 +51,11 @@ var callbackAlcohol = function (res) {
         finHtml = '';
 
         //console.log("Nombre d'ingredients : " + nbrIngredient)
+        var id = resultatAlcohol[i].idDrink;
+        var color = 'black';
+        if (favoriteDAO.isInFavorite(id)){
+            color = 'red';
+        }
 
         html += '<div class="card mb-4 mx-auto" style="min-width: 18rem; max-width: 18rem;">' +
             '       <img src="' + resultatAlcohol[i].strDrinkThumb + '" class="card-img-top" alt="' + resultatAlcohol[i].strDrink + '">\n' +
@@ -64,18 +64,16 @@ var callbackAlcohol = function (res) {
             '           <div class="" style="display: flex;' +
             '    align-items: center;">' +
             '               <button onclick="onButtonClick(' + resultatAlcohol[i].idDrink + ')" id="buttonId' + resultatAlcohol[i].idDrink + '" type="button" class="btn btn-sm btn-secondary mx-auto" data-toggle="modal" data-target="#modalId' + resultatAlcohol[i].idDrink + '">Details</button>' +
-            '               <p onclick="callBackFavClick(' + resultatAlcohol[i].idDrink + ')" id="fav-button' + resultatAlcohol[i].idDrink + '" data-id="' + resultatAlcohol[i].idDrink + '" class="fav-hover fav-non-select mx-auto"><span id="icon-fav"><i class="far fa-heart"></i></span></p>' +
+            '               <p onclick="clickFav(' + resultatAlcohol[i].idDrink + ')" id="fav-button' + resultatAlcohol[i].idDrink + '" data-id="' + resultatAlcohol[i].idDrink + '" style="color: '+color+'" class="fav-hover fav-non-select mx-auto"><span id="icon-fav"><i class="far fa-heart"></i></span></p>' +
             '           </div>' +
             '       </div>' +
             '   </div>';
 
 
         finalHtml += html;
-        divResult.innerHTML = finalHtml;
-
-        //document.getElementById("buttonId" + resultatRechercheCategory[i].idDrink).addEventListener("click", onButtonClick)
-
     }
+
+    divResult.innerHTML = finalHtml;
 
 };
 
@@ -214,16 +212,11 @@ var showPopUp = function (cocktail) {
     document.getElementById("modalCustom").innerHTML = finalHtml
     $('#modalId' + cocktailDetail.idDrink).modal('show');
 
-
 };
 
 var onButtonClick = function (id) {
     console.log("Id cocktail clicked : " + id)
     cocktailDAO.findById(id, showPopUp)
-};
-
-var searchByName = function (text) {
-    cocktailDAO.searchByName(text, callbackName)
 };
 
 document.getElementById("selectAlcohol").addEventListener("change", callbackClickAlcohol);
